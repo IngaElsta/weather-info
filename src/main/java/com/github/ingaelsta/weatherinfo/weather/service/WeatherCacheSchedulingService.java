@@ -22,7 +22,7 @@ public class WeatherCacheSchedulingService {
         this.favoriteLocationService = favoriteLocationService;
     }
 
-    @Scheduled(cron = "0 * * * * *")
+    @Scheduled(cron = "${cron.fetch}")
     public void cacheWeatherForFavoriteLocations () {
         List<FavoriteLocation> allFavoriteLocations =  favoriteLocationService.getAllFavorites();
         allFavoriteLocations
@@ -33,7 +33,7 @@ public class WeatherCacheSchedulingService {
                 });
     }
 
-    @Scheduled(cron = "*/2 * * * * *")
+    @Scheduled(cron = "${cron.evict}")
     public void clearAllCache () {
         weatherService.evictAllWeatherCache();
     }

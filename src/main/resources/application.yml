@@ -1,0 +1,27 @@
+springdoc:
+  api-docs:
+    path: /api-docs
+server.error.include-message: always
+
+openweathermap:
+  authToken: a837b61cff335dd9bff2f869b17301ad
+  oneApiUrl: https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=minutely,hourly,current&appid={authToken}&units=metric
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:demo
+    driverClassName: org.h2.Driver
+    username: sa
+    password: password
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      dll-auto: create-drop
+    defer-datasource-initialization: true
+  h2:
+    console:
+      enabled: true
+  sql:
+    init:
+      mode: never
+

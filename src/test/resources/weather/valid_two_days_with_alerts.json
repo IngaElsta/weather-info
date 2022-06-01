@@ -1,0 +1,121 @@
+{
+    "lat": 57.39,
+    "lon": 21.58,
+    "timezone": "Europe/Riga",
+    "timezone_offset": 7200,
+    "daily": [
+        {
+            "dt": 1643536800,
+            "sunrise": 1643524743,
+            "sunset": 1643554479,
+            "moonrise": 1643523480,
+            "moonset": 1643543220,
+            "moon_phase": 0.93,
+            "temp": {
+                "day": 1.19,
+                "min": -0.47,
+                "max": 4.69,
+                "night": -0.47,
+                "eve": -0.18,
+                "morn": 1.8
+            },
+            "feels_like": {
+                "day": -5.81,
+                "night": -7.47,
+                "eve": -7.18,
+                "morn": -5.2
+            },
+            "pressure": 975,
+            "humidity": 99,
+            "dew_point": 1.05,
+            "wind_speed": 17.08,
+            "wind_deg": 347,
+            "wind_gust": 21.9,
+            "weather": [
+                {
+                    "id": 616,
+                    "main": "Snow",
+                    "description": "rain and snow",
+                    "icon": "13d"
+                }
+            ],
+            "clouds": 100,
+            "pop": 1,
+            "rain": 3.42,
+            "snow": 3.87,
+            "uvi": 0.11
+        },
+        {
+            "dt": 1643623200,
+            "sunrise": 1643611025,
+            "sunset": 1643641018,
+            "moonrise": 1643612580,
+            "moonset": 1643634900,
+            "moon_phase": 0.97,
+            "temp": {
+                "day": -0.26,
+                "min": -1.92,
+                "max": -0.26,
+                "night": -1.92,
+                "eve": -1.17,
+                "morn": -0.73
+            },
+            "feels_like": {
+                "day": -6.98,
+                "night": -8.38,
+                "eve": -7.93,
+                "morn": -7.73
+            },
+            "pressure": 997,
+            "humidity": 69,
+            "dew_point": -5.33,
+            "wind_speed": 12.78,
+            "wind_deg": 348,
+            "wind_gust": 16.97,
+            "weather": [
+                {
+                    "id": 600,
+                    "main": "Snow",
+                    "description": "light snow",
+                    "icon": "13d"
+                }
+            ],
+            "clouds": 100,
+            "pop": 0.9,
+            "snow": 1.2,
+            "uvi": 0.35
+        }
+    ],
+    "alerts": [
+        {
+            "sender_name": "Latvian Environment, Geology and Meteorology Centre",
+            "event": "Yellow Flooding Warning",
+            "start": 1643364000,
+            "end": 1643716800,
+            "description": "Due to intense rainfall in western part rivers water level rise will continue. Floodplains and lowest places will be flooded. BE AWARE of areas that are subject to flooding. The public are advised to be cautious when driving or walking in endangered areas. More information on hydrological conditions is available at hidro.meteo.lv",
+            "tags": [
+                "Flood"
+            ]
+        },
+        {
+            "sender_name": "Latvian Environment, Geology and Meteorology Centre",
+            "event": "Red Wind Warning",
+            "start": 1643518800,
+            "end": 1643554800,
+            "description": "29.01.-30.01.2022 at night south, south-west wind will remain in gusts up to 25 m/s. Wave height 3.0-5.5 m. 30.01.2022 in the morning wind will be veering to west, north-west and by day increasing in gusts up to 33 m/s. Wave height 6.0-8.0 m. TAKE ACTION to protect yourself. Risk to personal safety from uprooted trees and flying debris. Widespread structural damage, road closures and power outages are expected",
+            "tags": [
+                "Wind"
+            ]
+        },
+        {
+            "sender_name": "Latvian Environment, Geology and Meteorology Centre",
+            "event": "Orange Snow-Ice Warning",
+            "start": 1643536800,
+            "end": 1643590800,
+            "description": "30.01.2022 in the afternoon in the west part of Latvia very heavy blizzard is expected. Visibility during blizzard will be reduced to 100-500 m and roads will be slippery! BE PREPARED for very heavy widespread snowfall that will cause disruption to transport movement on roads and railroads. Air traffic, pedestrian movement and outdoor activities will be disrupted as well. Take care when moving on roads, longer journey times will be needed",
+            "tags": [
+                "Snow/Ice"
+            ]
+        }
+    ]
+}

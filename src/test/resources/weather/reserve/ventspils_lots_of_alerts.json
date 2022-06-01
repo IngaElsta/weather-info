@@ -1,0 +1,407 @@
+{
+    "lat": 57.39,
+    "lon": 21.58,
+    "timezone": "Europe/Riga",
+    "timezone_offset": 7200,
+    "current": {
+        "dt": 1643539874,
+        "sunrise": 1643524743,
+        "sunset": 1643554479,
+        "temp": 0.99,
+        "feels_like": -6.01,
+        "pressure": 975,
+        "humidity": 100,
+        "dew_point": 0.99,
+        "uvi": 0.1,
+        "clouds": 100,
+        "visibility": 2200,
+        "wind_speed": 14.92,
+        "wind_deg": 340,
+        "wind_gust": 22.64,
+        "weather": [
+            {
+                "id": 804,
+                "main": "Clouds",
+                "description": "overcast clouds",
+                "icon": "04d"
+            }
+        ]
+    },
+    "daily": [
+        {
+            "dt": 1643536800,
+            "sunrise": 1643524743,
+            "sunset": 1643554479,
+            "moonrise": 1643523480,
+            "moonset": 1643543220,
+            "moon_phase": 0.93,
+            "temp": {
+                "day": 1.19,
+                "min": -0.47,
+                "max": 4.69,
+                "night": -0.47,
+                "eve": -0.18,
+                "morn": 1.8
+            },
+            "feels_like": {
+                "day": -5.81,
+                "night": -7.47,
+                "eve": -7.18,
+                "morn": -5.2
+            },
+            "pressure": 975,
+            "humidity": 99,
+            "dew_point": 1.05,
+            "wind_speed": 17.08,
+            "wind_deg": 347,
+            "wind_gust": 21.9,
+            "weather": [
+                {
+                    "id": 616,
+                    "main": "Snow",
+                    "description": "rain and snow",
+                    "icon": "13d"
+                }
+            ],
+            "clouds": 100,
+            "pop": 1,
+            "rain": 3.42,
+            "snow": 3.87,
+            "uvi": 0.11
+        },
+        {
+            "dt": 1643623200,
+            "sunrise": 1643611025,
+            "sunset": 1643641018,
+            "moonrise": 1643612580,
+            "moonset": 1643634900,
+            "moon_phase": 0.97,
+            "temp": {
+                "day": -0.26,
+                "min": -1.92,
+                "max": -0.26,
+                "night": -1.92,
+                "eve": -1.17,
+                "morn": -0.73
+            },
+            "feels_like": {
+                "day": -6.98,
+                "night": -8.38,
+                "eve": -7.93,
+                "morn": -7.73
+            },
+            "pressure": 997,
+            "humidity": 69,
+            "dew_point": -5.33,
+            "wind_speed": 12.78,
+            "wind_deg": 348,
+            "wind_gust": 16.97,
+            "weather": [
+                {
+                    "id": 600,
+                    "main": "Snow",
+                    "description": "light snow",
+                    "icon": "13d"
+                }
+            ],
+            "clouds": 100,
+            "pop": 0.9,
+            "snow": 1.2,
+            "uvi": 0.35
+        },
+        {
+            "dt": 1643709600,
+            "sunrise": 1643697305,
+            "sunset": 1643727557,
+            "moonrise": 1643700600,
+            "moonset": 1643727180,
+            "moon_phase": 0,
+            "temp": {
+                "day": -1.27,
+                "min": -2.56,
+                "max": -0.98,
+                "night": -2.56,
+                "eve": -1.87,
+                "morn": -1.93
+            },
+            "feels_like": {
+                "day": -6.56,
+                "night": -2.56,
+                "eve": -5.82,
+                "morn": -8.32
+            },
+            "pressure": 999,
+            "humidity": 73,
+            "dew_point": -5.55,
+            "wind_speed": 7.17,
+            "wind_deg": 343,
+            "wind_gust": 9.63,
+            "weather": [
+                {
+                    "id": 600,
+                    "main": "Snow",
+                    "description": "light snow",
+                    "icon": "13d"
+                }
+            ],
+            "clouds": 100,
+            "pop": 0.6,
+            "snow": 1.73,
+            "uvi": 0.34
+        },
+        {
+            "dt": 1643796000,
+            "sunrise": 1643783583,
+            "sunset": 1643814096,
+            "moonrise": 1643787960,
+            "moonset": 1643819400,
+            "moon_phase": 0.04,
+            "temp": {
+                "day": -2.03,
+                "min": -3.68,
+                "max": -1.15,
+                "night": -2.23,
+                "eve": -2.23,
+                "morn": -3.23
+            },
+            "feels_like": {
+                "day": -2.03,
+                "night": -6.48,
+                "eve": -6.36,
+                "morn": -3.23
+            },
+            "pressure": 1002,
+            "humidity": 81,
+            "dew_point": -4.87,
+            "wind_speed": 3.33,
+            "wind_deg": 357,
+            "wind_gust": 4.71,
+            "weather": [
+                {
+                    "id": 600,
+                    "main": "Snow",
+                    "description": "light snow",
+                    "icon": "13d"
+                }
+            ],
+            "clouds": 94,
+            "pop": 0.39,
+            "snow": 0.96,
+            "uvi": 0.37
+        },
+        {
+            "dt": 1643882400,
+            "sunrise": 1643869858,
+            "sunset": 1643900636,
+            "moonrise": 1643875020,
+            "moonset": 1643911380,
+            "moon_phase": 0.08,
+            "temp": {
+                "day": -1.55,
+                "min": -4.01,
+                "max": -1.39,
+                "night": -4.01,
+                "eve": -2.59,
+                "morn": -1.99
+            },
+            "feels_like": {
+                "day": -4.17,
+                "night": -8.89,
+                "eve": -2.59,
+                "morn": -6.68
+            },
+            "pressure": 1017,
+            "humidity": 76,
+            "dew_point": -5.37,
+            "wind_speed": 3.93,
+            "wind_deg": 351,
+            "wind_gust": 5.71,
+            "weather": [
+                {
+                    "id": 600,
+                    "main": "Snow",
+                    "description": "light snow",
+                    "icon": "13d"
+                }
+            ],
+            "clouds": 99,
+            "pop": 0.31,
+            "snow": 0.56,
+            "uvi": 0.48
+        },
+        {
+            "dt": 1643968800,
+            "sunrise": 1643956132,
+            "sunset": 1643987176,
+            "moonrise": 1643961900,
+            "moonset": 1644003120,
+            "moon_phase": 0.12,
+            "temp": {
+                "day": -1.58,
+                "min": -3.37,
+                "max": 0.11,
+                "night": 0.11,
+                "eve": -0.25,
+                "morn": -3
+            },
+            "feels_like": {
+                "day": -8.24,
+                "night": -5.76,
+                "eve": -6.65,
+                "morn": -8.81
+            },
+            "pressure": 1011,
+            "humidity": 88,
+            "dew_point": -3.3,
+            "wind_speed": 8.17,
+            "wind_deg": 153,
+            "wind_gust": 14.57,
+            "weather": [
+                {
+                    "id": 600,
+                    "main": "Snow",
+                    "description": "light snow",
+                    "icon": "13d"
+                }
+            ],
+            "clouds": 100,
+            "pop": 0.99,
+            "snow": 1.64,
+            "uvi": 1
+        },
+        {
+            "dt": 1644055200,
+            "sunrise": 1644042404,
+            "sunset": 1644073717,
+            "moonrise": 1644048720,
+            "moonset": 1644094500,
+            "moon_phase": 0.15,
+            "temp": {
+                "day": 2.48,
+                "min": 0.85,
+                "max": 2.48,
+                "night": 2.35,
+                "eve": 2.1,
+                "morn": 1.42
+            },
+            "feels_like": {
+                "day": -2.37,
+                "night": -3.26,
+                "eve": -3.07,
+                "morn": -4.15
+            },
+            "pressure": 1002,
+            "humidity": 88,
+            "dew_point": 0.65,
+            "wind_speed": 7.97,
+            "wind_deg": 234,
+            "wind_gust": 12.9,
+            "weather": [
+                {
+                    "id": 616,
+                    "main": "Snow",
+                    "description": "rain and snow",
+                    "icon": "13d"
+                }
+            ],
+            "clouds": 100,
+            "pop": 0.91,
+            "rain": 1.23,
+            "snow": 1.64,
+            "uvi": 1
+        },
+        {
+            "dt": 1644141600,
+            "sunrise": 1644128674,
+            "sunset": 1644160257,
+            "moonrise": 1644135480,
+            "moonset": 0,
+            "moon_phase": 0.18,
+            "temp": {
+                "day": 2.79,
+                "min": 0.92,
+                "max": 3.34,
+                "night": 0.92,
+                "eve": 2.99,
+                "morn": 1.99
+            },
+            "feels_like": {
+                "day": -3.58,
+                "night": -5.09,
+                "eve": -2.27,
+                "morn": -4.93
+            },
+            "pressure": 992,
+            "humidity": 97,
+            "dew_point": 2.32,
+            "wind_speed": 12.39,
+            "wind_deg": 207,
+            "wind_gust": 19.36,
+            "weather": [
+                {
+                    "id": 616,
+                    "main": "Snow",
+                    "description": "rain and snow",
+                    "icon": "13d"
+                }
+            ],
+            "clouds": 100,
+            "pop": 1,
+            "rain": 7.95,
+            "snow": 2.51,
+            "uvi": 1
+        }
+    ],
+    "alerts": [
+        {
+            "sender_name": "Latvian Environment, Geology and Meteorology Centre",
+            "event": "Yellow Flooding Warning",
+            "start": 1643364000,
+            "end": 1643716800,
+            "description": "Due to intense rainfall in western part rivers water level rise will continue. Floodplains and lowest places will be flooded. BE AWARE of areas that are subject to flooding. The public are advised to be cautious when driving or walking in endangered areas. More information on hydrological conditions is available at hidro.meteo.lv",
+            "tags": [
+                "Flood"
+            ]
+        },
+        {
+            "sender_name": "Latvian Environment, Geology and Meteorology Centre",
+            "event": "Yellow Wind Warning",
+            "start": 1643497200,
+            "end": 1643598000,
+            "description": "30.01.2022 in the morning in the west part of Latvia south-west, south wind will be gradually veering to west, north-west, in gusts up to 16-21 m/s, and in the middle of the day in the seaboard rapidly increasing to in gusts up to 26-31 m/s. Wind will be gradually decreasing in 31.01. at night. BE AWARE of broken tree branches and debris being blown around. Localised outdoor activity disruption is possible due to debris",
+            "tags": [
+                "Wind"
+            ]
+        },
+        {
+            "sender_name": "Latvian Environment, Geology and Meteorology Centre",
+            "event": "Orange Wind Warning",
+            "start": 1643529600,
+            "end": 1643569200,
+            "description": "30.01.2022 in the morning in the west part of Latvia south-west, south wind will be gradually veering to west, north-west, in gusts up to 16-21 m/s, and in the middle of the day in the seaboard rapidly increasing to in gusts up to 26-31 m/s. Wind will be gradually decreasing in 31.01. at night. BE PREPARED for disruption, structural damage and risk of injury from uprooted trees and flying debris. Disruption to power supplies are possible",
+            "tags": [
+                "Wind"
+            ]
+        },
+        {
+            "sender_name": "Latvian Environment, Geology and Meteorology Centre",
+            "event": "Red Wind Warning",
+            "start": 1643518800,
+            "end": 1643554800,
+            "description": "29.01.-30.01.2022 at night south, south-west wind will remain in gusts up to 25 m/s. Wave height 3.0-5.5 m. 30.01.2022 in the morning wind will be veering to west, north-west and by day increasing in gusts up to 33 m/s. Wave height 6.0-8.0 m. TAKE ACTION to protect yourself. Risk to personal safety from uprooted trees and flying debris. Widespread structural damage, road closures and power outages are expected",
+            "tags": [
+                "Wind"
+            ]
+        },
+        {
+            "sender_name": "Latvian Environment, Geology and Meteorology Centre",
+            "event": "Orange Snow-Ice Warning",
+            "start": 1643536800,
+            "end": 1643590800,
+            "description": "30.01.2022 in the afternoon in the west part of Latvia very heavy blizzard is expected. Visibility during blizzard will be reduced to 100-500 m and roads will be slippery! BE PREPARED for very heavy widespread snowfall that will cause disruption to transport movement on roads and railroads. Air traffic, pedestrian movement and outdoor activities will be disrupted as well. Take care when moving on roads, longer journey times will be needed",
+            "tags": [
+                "Snow/Ice"
+            ]
+        }
+    ]
+}

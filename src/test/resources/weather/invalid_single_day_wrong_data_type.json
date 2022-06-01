@@ -1,0 +1,49 @@
+{
+    "lat": 55.87,
+    "lon": 26.52,
+    "timezone": "Europe/Riga",
+    "timezone_offset": 7200,
+    "daily": [
+        {
+            "dt": "1643536800",
+            "sunrise": 1643523144,
+            "sunset": 1643553707,
+            "moonrise": 1643521320,
+            "moonset": 1643542920,
+            "moon_phase": 0.93,
+            "temp": {
+                "day": "wrong data type",
+                "min": -0.94,
+                "max": 2.07,
+                "night": -0.94,
+                "eve": -0.16,
+                "morn": 1.64
+            },
+            "feels_like": {
+                "day": -3.76,
+                "night": -0.94,
+                "eve": -3.22,
+                "morn": -3.68
+            },
+            "pressure": 979,
+            "humidity": 85,
+            "dew_point": -1.01,
+            "wind_speed": 8.23,
+            "wind_deg": 191,
+            "wind_gust": 17.56,
+            "weather": [
+                {
+                    "id": 616,
+                    "main": "Snow",
+                    "description": "rain and snow",
+                    "icon": "13d"
+                }
+            ],
+            "clouds": 100,
+            "pop": 1,
+            "rain": 0.81,
+            "snow": 4.1,
+            "uvi": 0.31
+        }
+    ]
+}

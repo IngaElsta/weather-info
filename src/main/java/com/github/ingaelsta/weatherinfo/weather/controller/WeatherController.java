@@ -17,7 +17,7 @@ import java.util.Map;
 
 @RestController
 @Validated
-@RequestMapping("api/v1/outdoor-planner/weather")
+@RequestMapping("api/v1/weather-info/weather")
 public class WeatherController {
 
     private final WeatherService weatherService;

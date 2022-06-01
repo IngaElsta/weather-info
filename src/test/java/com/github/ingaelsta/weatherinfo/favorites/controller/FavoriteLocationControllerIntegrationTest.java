@@ -36,7 +36,7 @@ class FavoriteLocationControllerIntegrationTest {
     private final FavoriteLocation location1 = new FavoriteLocation(latitude, longitude, locationName);
     private final FavoriteLocation location2 = new FavoriteLocation(-63.81,-57.69,"Watching Antarctic birds");
 
-    private static final String URL = "/api/v1/outdoor-planner/favorites";
+    private static final String URL = "/api/v1/weather-info/favorites";
 
     private static class TestException extends RuntimeException {
         TestException(String message) {

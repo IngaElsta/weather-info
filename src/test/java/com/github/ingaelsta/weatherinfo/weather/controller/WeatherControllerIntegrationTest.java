@@ -35,7 +35,7 @@ class WeatherControllerIntegrationTest {
 
     @MockBean
     private WeatherService weatherServiceMock;
-    private static final String URL = "/api/v1/outdoor-planner/weather";
+    private static final String URL = "/api/v1/weather-info/weather";
     private static final LocalDate date = Conversion.convertDate(1643536800).toLocalDate();
 
     private static class TestException extends RuntimeException {

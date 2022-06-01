@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @Validated
-@RequestMapping("api/v1/outdoor-planner/favorites")
+@RequestMapping("api/v1/weather-info/favorites")
 public class FavoriteLocationController {
 
     private final FavoriteLocationService favoriteLocationService;

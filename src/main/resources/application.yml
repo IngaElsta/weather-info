@@ -7,7 +7,7 @@ server:
     include-message: always
 
 openweathermap:
-  authToken: a837b61cff335dd9bff2f869b17301ad
+  authToken: ${owmToken}
   oneApiUrl: https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=minutely,hourly,current&appid={authToken}&units=metric
 
 spring:

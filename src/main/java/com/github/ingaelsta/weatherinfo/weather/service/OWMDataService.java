@@ -45,7 +45,10 @@ public class OWMDataService implements WeatherDataService {
         String response = webClient.get()
                 .uri(owmURI)
                 .retrieve()
-                .onStatus(HttpStatus::isError, throwable -> {
+                .onStatus(HttpStatus::isError, result -> {
+                    result.toEntity(String.class).subscribe(
+                            error -> log.warn("Failed to retrieve weather data {}", error)
+                    );
                     throw new OWMDataException("Failed to retrieve weather data");
                 })
                 .bodyToMono(String.class)

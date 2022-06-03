@@ -5,10 +5,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.ingaelsta.weatherinfo.commons.model.Location;
 import com.github.ingaelsta.weatherinfo.weather.configuration.OWMConfiguration;
 import com.github.ingaelsta.weatherinfo.weather.configuration.OWMObjectMapperConfiguration;
+import com.github.ingaelsta.weatherinfo.weather.exception.OWMDataException;
 import com.github.ingaelsta.weatherinfo.weather.model.Temperature;
 import com.github.ingaelsta.weatherinfo.weather.model.WeatherConditions;
 import com.github.ingaelsta.weatherinfo.commons.Conversion;
 import com.github.ingaelsta.weatherinfo.weather.model.Wind;
+import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.AfterAll;
@@ -29,6 +31,9 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -41,7 +46,9 @@ public class OWMDataServiceTest {
 
     @Autowired
     private OWMConfiguration owmConfiguration;
-    private ObjectMapper objectMapperMock = Mockito.mock(ObjectMapper.class);
+    @Autowired
+    private CircuitBreakerRegistry circuitBreakerRegistry;
+    private final ObjectMapper objectMapperMock = Mockito.mock(ObjectMapper.class);
     private OWMObjectMapperConfiguration objectMapperConfigMock;
     private OWMDataService owmDataServiceMock;
     public static MockWebServer mockBackEnd;
@@ -80,7 +87,8 @@ public class OWMDataServiceTest {
     }
 
     @Test
-    void When_mockReturnsStatusOKAndData_Then_retrieveWeatherReturnsDeserializedData() throws JsonProcessingException {
+    void When_mockReturnsStatusOKAndData_Then_retrieveWeatherReturnsDeserializedData()
+            throws JsonProcessingException {
         String text = "placeholder";
         mockBackEnd.enqueue(new MockResponse()
                 .setBody(text)
@@ -90,5 +98,47 @@ public class OWMDataServiceTest {
         Map<LocalDate, WeatherConditions> result = owmDataServiceMock.retrieveWeather(location);
         assertEquals(weatherConditionsMap, result);
     }
+
+    @Test
+    void When_mockReturnsStatusErrorResponse_Then_retrieveWeatherThrowsOWMDataException()
+            throws JsonProcessingException {
+        String text = "placeholder";
+        mockBackEnd.enqueue(new MockResponse()
+                .setBody(text)
+                .addHeader("Content-Type", "application/json")
+                .setResponseCode(400));
+        assertThrows(OWMDataException.class, () -> owmDataServiceMock.retrieveWeather(location));
+    }
+
+    @Test
+    void When_objectMapperThrowsJsonProcessingException_Then_retrieveWeatherThrowsOWMDataException()
+            throws JsonProcessingException {
+        String text = "placeholder";
+        mockBackEnd.enqueue(new MockResponse()
+                .setBody(text)
+                .addHeader("Content-Type", "application/json"));
+        when(objectMapperMock.readValue(text, Map.class))
+                .thenThrow(JsonProcessingException.class);
+        assertThrows(OWMDataException.class, () -> owmDataServiceMock.retrieveWeather(location));
+    }
+
+    @Test
+    public void When_CircuitBreakerIsClosedAndBackendIsFunctional_Then_retrieve()
+            throws JsonProcessingException {
+        circuitBreakerRegistry.circuitBreaker("OWMCircuitBreaker")
+                .transitionToClosedState();
+        String text = "placeholder";
+        mockBackEnd.enqueue(new MockResponse()
+                .setBody(text)
+                .addHeader("Content-Type", "application/json"));
+        when(objectMapperMock.readValue(text, Map.class))
+                .thenReturn(weatherConditionsMap);
+
+        Map<LocalDate, WeatherConditions> result = owmDataServiceMock.retrieveWeather(location);
+        assertEquals(weatherConditionsMap, result);
+        verify(objectMapperMock, times(1)).readValue(text, Map.class);
+    }
+
+    //todo: add circuit breaker tests for open and down
 
 }

@@ -9,6 +9,7 @@ import com.github.ingaelsta.weatherinfo.weather.exception.OWMDataException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.http.HttpStatus;
@@ -30,18 +31,24 @@ public class OWMDataService implements WeatherDataService {
     private final WebClient webClient;
 
     public OWMDataService(OWMConfiguration owmConfiguration,
-                          OWMObjectMapperConfiguration OWMobjectMapperConfiguration) {
+                          OWMObjectMapperConfiguration OWMobjectMapperConfiguration
+                           ) {
         this.owmConfiguration = owmConfiguration;
         this.objectMapper = OWMobjectMapperConfiguration.getObjectMapper();
         this.webClient = WebClient.create();
     }
 
+    @CircuitBreaker(name = "OWMCircuitBreaker")
     public Map<LocalDate, WeatherConditions> retrieveWeather (Location location) {
         //todo: works but seems much slower (15s???)... commit now, investigate later
-        //todo: add circuit breaker
         URI owmURI = new UriTemplate(owmConfiguration.getOneApiUrl())
                 .expand(location.getLatitude(), location.getLongitude(),
                         owmConfiguration.getAuthToken());
+        String response = getOWMResponse(owmURI);
+        return processWeatherData(response, objectMapper);
+    }
+
+    private String getOWMResponse(URI owmURI) {
         String response = webClient.get()
                 .uri(owmURI)
                 .retrieve()
@@ -53,15 +60,14 @@ public class OWMDataService implements WeatherDataService {
                 })
                 .bodyToMono(String.class)
                 .block(Duration.of(30000, ChronoUnit.MILLIS));
-        return processWeatherData(response, objectMapper);
+        return response;
     }
 
-    //todo: probably integrate it back into retrieve weather method
-    public static Map<LocalDate, WeatherConditions> processWeatherData(
+    @SuppressWarnings("unchecked")
+    private static Map<LocalDate, WeatherConditions> processWeatherData(
             String weatherJson,
             ObjectMapper objectMapper) {
         try {
-            //todo: look into "unchecked assignment" warning
             return objectMapper.readValue(weatherJson, Map.class);
         } catch (JsonProcessingException e) {
             log.error("processWeatherData: Failed to process weather data {}", weatherJson);

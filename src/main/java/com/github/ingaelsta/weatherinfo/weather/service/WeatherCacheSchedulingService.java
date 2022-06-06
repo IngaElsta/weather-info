@@ -51,7 +51,6 @@ public class WeatherCacheSchedulingService {
                 .bodyToFlux(FavoriteLocation.class)
                 .collectList()
                 .block(Duration.of(3000, ChronoUnit.MILLIS));
-        System.out.println(favoriteList);
         return favoriteList;
     }
 

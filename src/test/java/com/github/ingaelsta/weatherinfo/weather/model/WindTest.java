@@ -104,7 +104,8 @@ public class WindTest {
 
     @Test
     void WindDegreesAreSuccessfullyConvertedToMainDirections(){
-
+        assertNull(Wind.degreesToDirection(-4));
+        assertEquals(Wind.degreesToDirection(0), ("N"));
         assertEquals(Wind.degreesToDirection(60), ("NE"));
         assertEquals(Wind.degreesToDirection(80), ("E"));
         assertEquals(Wind.degreesToDirection(115), ("SE"));
@@ -112,9 +113,8 @@ public class WindTest {
         assertEquals(Wind.degreesToDirection(203), ("SW"));
         assertEquals(Wind.degreesToDirection(260), ("W"));
         assertEquals(Wind.degreesToDirection(300), ("NW"));
-        assertEquals(Wind.degreesToDirection(0), ("N"));
         assertEquals(Wind.degreesToDirection(350), ("N"));
-        assertNull(Wind.degreesToDirection(-400));
+        assertNull(Wind.degreesToDirection(400));
     }
 
 }

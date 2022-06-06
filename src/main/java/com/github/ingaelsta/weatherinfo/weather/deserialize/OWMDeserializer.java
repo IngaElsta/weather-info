@@ -47,10 +47,10 @@ public class OWMDeserializer extends StdDeserializer<Map<LocalDate, WeatherCondi
             alertNode.forEach(alertItem -> {
                 try {
                     String event = alertItem.get("event").asText();
-                    LocalDateTime start = Conversion
-                            .convertDate(alertItem.get("start").asLong());
-                    LocalDateTime end = Conversion
-                            .convertDate(alertItem.get("end").asLong());
+                    LocalDateTime start = Conversion.convertDate(
+                            Long.parseLong(alertItem.get("start").asText()));
+                    LocalDateTime end = Conversion.convertDate(
+                            Long.parseLong(alertItem.get("end").asText()));
 
                     Alert alert = new Alert(event, start, end);
                     alerts.add(alert);
@@ -68,25 +68,31 @@ public class OWMDeserializer extends StdDeserializer<Map<LocalDate, WeatherCondi
 
     private Map<LocalDate, WeatherConditions> processDailyWeatherArray(
             JsonNode DailyWeatherListNode, List<Alert> allAlerts) {
-
         Map<LocalDate, WeatherConditions> conditionsMap = new LinkedHashMap<>();
-        if (DailyWeatherListNode.isArray()) {
-            DailyWeatherListNode.forEach(dailyWeatherNode -> {
-                try {
-                    long dateValue = Long.valueOf(dailyWeatherNode.get("dt").asText());
-                    LocalDate date = Conversion.convertDate(dateValue).toLocalDate();
-                    WeatherConditions conditions = processWeatherConditions(date, dailyWeatherNode);
-                    conditions.setAlerts(gatherAlertDataForDay(allAlerts, date));
-                    conditionsMap.put(date, conditions);
-                } catch (NullPointerException e) {
-                    log.error("OWMDeserializer: Node or element missing while processing daily data in {}", dailyWeatherNode);
-                    throw new OWMDataException("Failed to process weather data");
-                } catch (NumberFormatException e) {
-                    log.error("OWMDeserializer: Numeric value unreadable while processing daily data in {}", dailyWeatherNode);
-                    throw new OWMDataException("Failed to process weather data");
-                }
-            });
+        if (DailyWeatherListNode == null
+                || DailyWeatherListNode.isEmpty()
+                || !DailyWeatherListNode.isArray()) {
+            log.error("OWMDeserializer: Json did not contain daily weather data, {}", DailyWeatherListNode);
+            throw new OWMDataException("Failed to process weather data");
         }
+        DailyWeatherListNode.forEach(dailyWeatherNode -> {
+            try {
+                long dateValue = Long.parseLong(dailyWeatherNode.get("dt").asText());
+                LocalDate date = Conversion.convertDate(dateValue).toLocalDate();
+                WeatherConditions conditions = processWeatherConditions(date, dailyWeatherNode);
+                conditions.setAlerts(gatherAlertDataForDay(allAlerts, date));
+                conditionsMap.put(date, conditions);
+            } catch (NullPointerException e) {
+                log.error(
+                        "OWMDeserializer: Node or element missing while processing daily data in {}", dailyWeatherNode);
+                throw new OWMDataException("Failed to process weather data");
+            } catch (NumberFormatException e) {
+                log.error(
+                        "OWMDeserializer: Numeric value unreadable while processing daily data in {}", dailyWeatherNode);
+                throw new OWMDataException("Failed to process weather data");
+            }
+        });
+
         return conditionsMap;
     }
 
@@ -123,10 +129,10 @@ public class OWMDeserializer extends StdDeserializer<Map<LocalDate, WeatherCondi
 
     private Temperature gatherTemperatureData(JsonNode temperatureNode){
         return new Temperature(
-                Double.valueOf(temperatureNode.get("morn").asText()),
-                Double.valueOf(temperatureNode.get("day").asText()),
-                Double.valueOf(temperatureNode.get("eve").asText()),
-                Double.valueOf(temperatureNode.get("night").asText())
+                Double.parseDouble(temperatureNode.get("morn").asText()),
+                Double.parseDouble(temperatureNode.get("day").asText()),
+                Double.parseDouble(temperatureNode.get("eve").asText()),
+                Double.parseDouble(temperatureNode.get("night").asText())
         );
     }
 }

@@ -29,6 +29,10 @@ public class OWMDeserializerTest {
     private File jsonWithAlerts;
     private File jsonWrongDataType;
     private File jsonMissingData;
+    private File jsonMissingAlertData;
+    private File jsonWrongAlertDataType;
+    private File jsonNoDailyData;
+    private File jsonEmptyDailyData;
 
     @BeforeEach
     public void setup() throws IOException {
@@ -47,12 +51,20 @@ public class OWMDeserializerTest {
                 "classpath:weather/valid_two_days_with_alerts.json");
         jsonWrongDataType = ResourceUtils.getFile(
                 "classpath:weather/invalid_single_day_wrong_data_type.json");
+        jsonWrongAlertDataType = ResourceUtils.getFile(
+                "classpath:weather/invalid_single_day_wrong_data_type_in_alert.json");
         jsonMissingData = ResourceUtils.getFile(
                 "classpath:weather/invalid_single_day_missing_data.json");
+        jsonMissingAlertData = ResourceUtils.getFile(
+                "classpath:weather/invalid_single_day_missing_alert_data.json");
+        jsonNoDailyData = ResourceUtils.getFile(
+                "classpath:weather/invalid_single_day_no_daily_weather_data.json");
+        jsonEmptyDailyData = ResourceUtils.getFile(
+                "classpath:weather/invalid_single_day_empty_daily_weather_data.json");
     }
 
     @Test
-    void WhenDataValidWithNoAlerts_thenReturnsMapWithWeatherConditionsWithNoAlerts () throws IOException {
+    void When_DataValidWithNoAlerts_Then_deserializeReturnsMapWithWeatherConditionsWithNoAlerts () throws IOException {
         String text = new String(Files.readAllBytes(jsonNoAlerts.toPath()));
         Map<LocalDate, WeatherConditions> weatherConditionsMap = this.json.parseObject(text);
 
@@ -72,7 +84,7 @@ public class OWMDeserializerTest {
     }
 
     @Test
-    void WhenDataValidWithAlerts_thenReturnsMapWithWeatherConditionsWithAlerts () throws IOException {
+    void When_DataValidWithAlerts_Then_deserializeReturnsMapWithWeatherConditionsWithAlerts () throws IOException {
         String text = new String(Files.readAllBytes(jsonWithAlerts.toPath()));
 
         Map<LocalDate, WeatherConditions> weatherConditionsMap = this.json.parseObject(text);
@@ -126,16 +138,34 @@ public class OWMDeserializerTest {
     }
 
     @Test
-    void WhenDataValueMissing_thenConversionFails () throws IOException {
+    void When_DataValueMissing_Then_deserializeThrowsOWMDataException () throws IOException {
         String text = new String(Files.readAllBytes(jsonMissingData.toPath()));
-
         assertThrows(OWMDataException.class, () -> this.json.parseObject(text));
     }
 
     @Test
-    void WhenJsonHasNonNumericValueForNumber_thenConversionFails () throws IOException {
-        String text = new String(Files.readAllBytes(jsonWrongDataType.toPath()));
+    void WhenAlertValueMissing_Then_deserializeThrowsOWMDataException () throws IOException {
+        String text = new String(Files.readAllBytes(jsonMissingAlertData.toPath()));
+        assertThrows(OWMDataException.class, () -> this.json.parseObject(text));
+    }
 
+    @Test
+    void WhenDailyWeatherDataMissing_Then_deserializeThrowsOWMDataException () throws IOException {
+        String text1 = new String(Files.readAllBytes(jsonNoDailyData.toPath()));
+        assertThrows(OWMDataException.class, () -> this.json.parseObject(text1));
+        String text2 = new String(Files.readAllBytes(jsonEmptyDailyData.toPath()));
+        assertThrows(OWMDataException.class, () -> this.json.parseObject(text2));
+    }
+
+    @Test
+    void WhenJsonHasNonNumericValueForNumber_Then_deserializeThrowsOWMDataException () throws IOException {
+        String text = new String(Files.readAllBytes(jsonWrongDataType.toPath()));
+        assertThrows(OWMDataException.class, () -> this.json.parseObject(text));
+    }
+
+    @Test
+    void When_JsonHasNonNumericValueForNumberInAlert_Then_deserializeThrowsOWMDataException () throws IOException {
+        String text = new String(Files.readAllBytes(jsonWrongAlertDataType.toPath()));
         assertThrows(OWMDataException.class, () -> this.json.parseObject(text));
     }
 }

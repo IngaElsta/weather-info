@@ -39,6 +39,11 @@ public class WeatherCacheSchedulingService {
                 });
     }
 
+    @Scheduled(cron = "${cron.evict}")
+    public void clearAllCache () {
+        weatherService.evictAllWeatherCache();
+    }
+
     private List<FavoriteLocation> retrieveFavorites() {
         List<FavoriteLocation> favoriteList = webClient.get()
                 .uri(favoriteURI)
@@ -48,11 +53,6 @@ public class WeatherCacheSchedulingService {
                 .block(Duration.of(3000, ChronoUnit.MILLIS));
         System.out.println(favoriteList);
         return favoriteList;
-    }
-
-    @Scheduled(cron = "${cron.evict}")
-    public void clearAllCache () {
-        weatherService.evictAllWeatherCache();
     }
 
 }

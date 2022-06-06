@@ -2,7 +2,6 @@ package com.github.ingaelsta.weatherinfo.weather.service;
 
 import com.github.ingaelsta.weatherinfo.commons.model.Location;
 import com.github.ingaelsta.weatherinfo.favorites.entity.FavoriteLocation;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -11,7 +10,6 @@ import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
-@Slf4j
 @Service
 public class WeatherCacheSchedulingService {
 
@@ -33,7 +31,6 @@ public class WeatherCacheSchedulingService {
     @Scheduled(cron = "${cron.fetch}")
     public void cacheWeatherForFavoriteLocations () {
         List<FavoriteLocation> allFavoriteLocations = retrieveFavorites();
-        System.out.println(allFavoriteLocations);
         allFavoriteLocations
                 .forEach(favorite -> {
                     Location location = new Location(favorite.getLatitude(), favorite.getLongitude());

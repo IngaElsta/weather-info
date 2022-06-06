@@ -40,10 +40,6 @@ import static org.mockito.Mockito.when;
 @TestPropertySource(locations="classpath:test.properties") //doesn't work with yaml, might need a workaround
 public class OWMDataServiceTest {
 
-    //todo: try checking if correct arguments are passed
-//    @Captor
-//    private ArgumentCaptor<ClientRequest> argumentCaptor;
-
     @Autowired
     private OWMConfiguration owmConfiguration;
     @Autowired

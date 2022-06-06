@@ -40,7 +40,7 @@ public class OWMDataService implements WeatherDataService {
 
     @CircuitBreaker(name = "OWMCircuitBreaker")
     public Map<LocalDate, WeatherConditions> retrieveWeather (Location location) {
-        //todo: works but seems much slower (15s???)... commit now, investigate later
+        //todo: properly configure the circuit breaker
         URI owmURI = new UriTemplate(owmConfiguration.getOneApiUrl())
                 .expand(location.getLatitude(), location.getLongitude(),
                         owmConfiguration.getAuthToken());
@@ -54,7 +54,7 @@ public class OWMDataService implements WeatherDataService {
                 .retrieve()
                 .onStatus(HttpStatus::isError, result -> {
                     result.toEntity(String.class).subscribe(
-                            error -> log.warn("Failed to retrieve weather data {}", error)
+                            error -> log.error("Failed to retrieve weather data {}", error)
                     );
                     throw new OWMDataException("Failed to retrieve weather data");
                 })

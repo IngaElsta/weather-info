@@ -16,6 +16,7 @@ public class FavoriteLocationService {
     }
 
     public FavoriteLocation saveFavorite (FavoriteLocation location) {
+        // todo: most likely favorite names should not be overlapping if used from a drop-down, need to add a check
         return favoriteLocationRepository.save(location);
     }
 

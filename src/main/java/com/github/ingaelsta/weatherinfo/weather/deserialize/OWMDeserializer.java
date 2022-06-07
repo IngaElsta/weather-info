@@ -45,25 +45,28 @@ public class OWMDeserializer extends StdDeserializer<Map<LocalDate, WeatherCondi
         List<Alert> alerts = new ArrayList<>();
         if (alertNode != null && alertNode.isArray()) {
             alertNode.forEach(alertItem -> {
-                try {
-                    String event = alertItem.get("event").asText();
-                    LocalDateTime start = Conversion.convertDate(
-                            Long.parseLong(alertItem.get("start").asText()));
-                    LocalDateTime end = Conversion.convertDate(
-                            Long.parseLong(alertItem.get("end").asText()));
-
-                    Alert alert = new Alert(event, start, end);
-                    alerts.add(alert);
-                } catch (NullPointerException e) {
-                    log.error("OWMDeserializer: Node or element missing while processing alert in {}", alertItem);
-                    throw new OWMDataException("Failed to process weather data");
-                } catch (NumberFormatException e) {
-                    log.error("OWMDeserializer: Numeric value unreadable while processing alert data in {}", alertItem);
-                    throw new OWMDataException("Failed to process weather data");
-                }
+                Alert alert = processAlertNodeData(alertItem);
+                alerts.add(alert);
             });
         }
         return alerts;
+    }
+
+    private static Alert processAlertNodeData(JsonNode alertItem) {
+        try {
+            String event = alertItem.get("event").asText();
+            LocalDateTime start = Conversion.convertDate(
+                    Long.parseLong(alertItem.get("start").asText()));
+            LocalDateTime end = Conversion.convertDate(
+                    Long.parseLong(alertItem.get("end").asText()));
+            return new Alert(event, start, end);
+        } catch (NullPointerException e) {
+            log.error("OWMDeserializer: Node or element missing while processing alert in {}", alertItem);
+            throw new OWMDataException("Failed to process weather data");
+        } catch (NumberFormatException e) {
+            log.error("OWMDeserializer: Numeric value unreadable while processing alert data in {}", alertItem);
+            throw new OWMDataException("Failed to process weather data");
+        }
     }
 
     private Map<LocalDate, WeatherConditions> processDailyWeatherArray(
@@ -76,42 +79,53 @@ public class OWMDeserializer extends StdDeserializer<Map<LocalDate, WeatherCondi
             throw new OWMDataException("Failed to process weather data");
         }
         DailyWeatherListNode.forEach(dailyWeatherNode -> {
-            try {
-                long dateValue = Long.parseLong(dailyWeatherNode.get("dt").asText());
-                LocalDate date = Conversion.convertDate(dateValue).toLocalDate();
-                WeatherConditions conditions = processWeatherConditions(date, dailyWeatherNode);
-                conditions.setAlerts(gatherAlertDataForDay(allAlerts, date));
-                conditionsMap.put(date, conditions);
-            } catch (NullPointerException e) {
-                log.error(
-                        "OWMDeserializer: Node or element missing while processing daily data in {}", dailyWeatherNode);
-                throw new OWMDataException("Failed to process weather data");
-            } catch (NumberFormatException e) {
-                log.error(
-                        "OWMDeserializer: Numeric value unreadable while processing daily data in {}", dailyWeatherNode);
-                throw new OWMDataException("Failed to process weather data");
-            }
+            WeatherConditions conditions = processDailyWeatherNodeData(allAlerts,dailyWeatherNode);
+            conditionsMap.put(conditions.getDate(), conditions);
         });
 
         return conditionsMap;
     }
 
+    private WeatherConditions processDailyWeatherNodeData(List<Alert> allAlerts, JsonNode dailyWeatherNode) {
+        try {
+            LocalDate date = Conversion.convertDate(
+                    Long.parseLong(dailyWeatherNode.get("dt").asText()))
+                    .toLocalDate();
+            WeatherConditions conditions = processWeatherConditions(date, dailyWeatherNode);
+            conditions.setAlerts(gatherAlertDataForDay(allAlerts, date));
+            return conditions;
+        } catch (NullPointerException e) {
+            log.error("OWMDeserializer: Node or element missing while processing daily data in {}",
+                    dailyWeatherNode);
+            throw new OWMDataException("Failed to process weather data");
+        } catch (NumberFormatException e) {
+            log.error("OWMDeserializer: Numeric value unreadable while processing daily data in {}",
+                    dailyWeatherNode);
+            throw new OWMDataException("Failed to process weather data");
+        }
+    }
+
     private WeatherConditions processWeatherConditions(LocalDate date, JsonNode dailyWeather) {
         Temperature temperature = gatherTemperatureData(dailyWeather.get("temp"));
-
-        Wind wind = new Wind(
-                Double.valueOf(dailyWeather.get("wind_speed").asText()),
-                Double.valueOf(dailyWeather.get("wind_gust").asText()),
-                Wind.degreesToDirection(dailyWeather.get("wind_deg").asInt()));
-
+        Wind wind = gatherWindData(dailyWeather);
         JsonNode weatherNode = dailyWeather.get("weather");
-
-        List<String> weatherDescriptions = new ArrayList<>();
-        weatherNode.forEach(description -> weatherDescriptions.add(description.get("description").asText()));
-
+        List<String> weatherDescriptions = gatherWeatherDescriptions(weatherNode);
         return new WeatherConditions(
                 date, weatherDescriptions, temperature, wind, null);
+    }
 
+    private List<String> gatherWeatherDescriptions(JsonNode weatherNode) {
+        List<String> weatherDescriptions = new ArrayList<>();
+        weatherNode.forEach(description -> weatherDescriptions.add(description.get("description").asText()));
+        return weatherDescriptions;
+    }
+
+    private Wind gatherWindData(JsonNode dailyWeather) {
+        Wind wind = new Wind(
+                Double.parseDouble(dailyWeather.get("wind_speed").asText()),
+                Double.parseDouble(dailyWeather.get("wind_gust").asText()),
+                Wind.degreesToDirection(dailyWeather.get("wind_deg").asInt()));
+        return wind;
     }
 
     private List<Alert> gatherAlertDataForDay(List<Alert> alerts, LocalDate date){

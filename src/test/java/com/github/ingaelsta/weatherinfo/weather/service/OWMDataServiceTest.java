@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.ingaelsta.weatherinfo.commons.model.Location;
 import com.github.ingaelsta.weatherinfo.weather.configuration.OWMConfiguration;
+import com.github.ingaelsta.weatherinfo.weather.configuration.OWMInitializer;
 import com.github.ingaelsta.weatherinfo.weather.configuration.OWMObjectMapperConfiguration;
 import com.github.ingaelsta.weatherinfo.weather.exception.OWMDataException;
 import com.github.ingaelsta.weatherinfo.weather.model.Temperature;
@@ -13,15 +14,14 @@ import com.github.ingaelsta.weatherinfo.weather.model.Wind;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
 
 import java.io.*;
 import java.time.LocalDate;
@@ -36,35 +36,34 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
-@TestPropertySource(locations="classpath:test.properties") //doesn't work with yaml, might need a workaround
+@SpringBootTest(
+        classes = {
+                OWMDataService.class,
+                ObjectMapper.class,
+                OWMConfiguration.class,
+                OWMInitializer.class,
+                OWMObjectMapperConfiguration.class,
+                CircuitBreakerRegistry.class
+        },
+        properties = {
+                    "openweathermap.authToken=placeholderToken",
+                    "openweathermap.oneApiUrl=http://localhost:8085/test?lat={lat}&lon={lon}&appid={authToken}}"
+        }
+)
+@AutoConfigureWebTestClient
 public class OWMDataServiceTest {
-
     @Autowired
     private OWMConfiguration owmConfiguration;
-    @Autowired
-    private CircuitBreakerRegistry circuitBreakerRegistry;
+    private final CircuitBreakerRegistry circuitBreakerRegistry = CircuitBreakerRegistry.ofDefaults();
     private final ObjectMapper objectMapperMock = Mockito.mock(ObjectMapper.class);
     private OWMObjectMapperConfiguration objectMapperConfigMock;
     private OWMDataService owmDataServiceMock;
     public static MockWebServer mockBackEnd;
-
     private Map<LocalDate, WeatherConditions> weatherConditionsMap;
     private Location location;
 
-    @BeforeAll
-    static void setUp() throws IOException {
-        mockBackEnd = new MockWebServer();
-        mockBackEnd.start(8085);
-    }
-
-    @AfterAll
-    static void tearDown() throws IOException {
-        mockBackEnd.shutdown();
-    }
-
     @BeforeEach
-    public void setup() {
+    public void setup() throws IOException {
         {
             LocalDate date = Conversion.convertDate(1643536800).toLocalDate();
             Temperature temperature = new Temperature(1.64, 1.09, -0.16, -0.94);
@@ -80,6 +79,13 @@ public class OWMDataServiceTest {
         }
         objectMapperConfigMock = new OWMObjectMapperConfiguration(objectMapperMock);
         owmDataServiceMock = new OWMDataService(owmConfiguration, objectMapperConfigMock);
+        mockBackEnd = new MockWebServer();
+        mockBackEnd.start(8085);
+    }
+
+    @AfterEach
+    void teardown() throws IOException {
+        mockBackEnd.shutdown();
     }
 
     @Test

@@ -7,6 +7,7 @@ server:
     include-message: always
 
 openweathermap:
+  timeout: 30000
   authToken: ${owmToken}
   oneApiUrl: https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=minutely,hourly,current&appid={authToken}&units=metric
 
@@ -31,3 +32,19 @@ spring:
 cron:
   fetch: "0 * * * * *"
   evict: "* 0 * * * *"
+
+resilience4j.circuitbreaker:
+  instances:
+    default:
+      registerHealthIndicator: true
+      slidingWindowSize: 3
+#    backendB:
+#      registerHealthIndicator: true
+#      slidingWindowSize: 10
+      permittedNumberOfCallsInHalfOpenState: 3
+#      slidingWindowType: TIME_BASED
+      minimumNumberOfCalls: 10
+      waitDurationInOpenState: 60s
+#      failureRateThreshold: 50
+#      eventConsumerBufferSize: 10
+#      recordFailurePredicate: io.github.robwin.exception.RecordFailurePredicate

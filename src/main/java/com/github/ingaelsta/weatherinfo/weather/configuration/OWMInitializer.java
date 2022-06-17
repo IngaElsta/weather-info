@@ -10,7 +10,6 @@ public class OWMInitializer {
 
     private final OWMConfiguration owmConfiguration;
 
-    @Autowired
     OWMInitializer(OWMConfiguration owmConfiguration) {
         this.owmConfiguration = owmConfiguration;
         log.info("Connection to OWM initialized");

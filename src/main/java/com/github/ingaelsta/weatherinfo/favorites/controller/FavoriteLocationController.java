@@ -17,7 +17,6 @@ public class FavoriteLocationController {
 
     private final FavoriteLocationService favoriteLocationService;
 
-    @Autowired
     public FavoriteLocationController (FavoriteLocationService favoriteLocationService) {
         this.favoriteLocationService = favoriteLocationService;
     }

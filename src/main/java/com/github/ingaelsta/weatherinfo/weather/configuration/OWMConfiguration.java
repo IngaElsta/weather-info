@@ -11,5 +11,5 @@ public class OWMConfiguration {
 
     private String authToken;
     private String oneApiUrl;
-
+    private String timeout;
 }

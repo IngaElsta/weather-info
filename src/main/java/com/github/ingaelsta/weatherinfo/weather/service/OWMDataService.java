@@ -8,10 +8,9 @@ import com.github.ingaelsta.weatherinfo.weather.model.WeatherConditions;
 import com.github.ingaelsta.weatherinfo.weather.exception.OWMDataException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.circuitbreaker.CircuitBreaker;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -29,16 +28,20 @@ public class OWMDataService implements WeatherDataService {
     private final ObjectMapper objectMapper;
     private final OWMConfiguration owmConfiguration;
     private final WebClient webClient;
+    @Getter
+    private final CircuitBreaker owmCircuitBreaker;
+    private final long timeout;
 
     public OWMDataService(OWMConfiguration owmConfiguration,
                           OWMObjectMapperConfiguration OWMobjectMapperConfiguration
-                           ) {
+    ) {
         this.owmConfiguration = owmConfiguration;
         this.objectMapper = OWMobjectMapperConfiguration.getObjectMapper();
+        this.owmCircuitBreaker = CircuitBreaker.ofDefaults("OWMCircuitBreaker");
         this.webClient = WebClient.create();
+        this.timeout = Long.parseLong(owmConfiguration.getTimeout());
     }
 
-    @CircuitBreaker(name = "OWMCircuitBreaker")
     public Map<LocalDate, WeatherConditions> retrieveWeather (Location location) {
         //todo: properly configure the circuit breaker
         URI owmURI = new UriTemplate(owmConfiguration.getOneApiUrl())
@@ -49,18 +52,18 @@ public class OWMDataService implements WeatherDataService {
     }
 
     private String getOWMResponse(URI owmURI) {
-        String response = webClient.get()
-                .uri(owmURI)
-                .retrieve()
-                .onStatus(HttpStatus::isError, result -> {
-                    result.toEntity(String.class).subscribe(
-                            error -> log.error("Failed to retrieve weather data {}", error)
-                    );
-                    throw new OWMDataException("Failed to retrieve weather data");
-                })
-                .bodyToMono(String.class)
-                .block(Duration.of(30000, ChronoUnit.MILLIS));
-        return response;
+        return owmCircuitBreaker.executeSupplier(() ->
+                webClient.get()
+                        .uri(owmURI)
+                        .retrieve()
+                        .onStatus(HttpStatus::isError, result -> {
+                            result.toEntity(String.class).subscribe(
+                                    error -> log.error("getOWMResponse: Failed to retrieve weather data {}", error)
+                            );
+                            throw new OWMDataException("Failed to retrieve weather data");
+                        })
+                        .bodyToMono(String.class)
+                        .block(Duration.of(timeout, ChronoUnit.MILLIS)));
     }
 
     @SuppressWarnings("unchecked")

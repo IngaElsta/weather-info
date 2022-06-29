@@ -1,0 +1,70 @@
+package rules;
+
+import java.lang.Integer;
+global com.github.ingaelsta.weatherinfo.weather.model.Wind wind;
+dialect  "mvel"
+
+rule "N1"
+when
+Integer( $degrees: intValue >= 0 && intValue <= 22 );
+then
+wind.setDirection("N");
+end;
+
+rule "NE"
+when
+Integer( $degrees: intValue >= 23 && intValue <= 67 );
+then
+wind.setDirection("NE");
+end;
+
+rule "E"
+when
+Integer( $degrees: intValue >= 68 && intValue <= 112 );
+then
+wind.setDirection("E");
+end;
+
+rule "SE"
+when
+Integer( $degrees: intValue >= 113 && intValue <= 157 );
+then
+wind.setDirection("SE");
+end;
+
+rule "S"
+when
+Integer( $degrees: intValue >= 158 && intValue <= 202 );
+then
+wind.setDirection("S");
+end;
+
+rule "SW"
+when
+Integer( $degrees: intValue >= 203 && intValue <= 247 );
+then
+wind.setDirection("SW");
+end;
+
+rule "W"
+when
+Integer( $degrees: intValue >= 248 && intValue <= 292 );
+then
+wind.setDirection("W");
+end;
+
+rule "NW"
+when
+Integer( $degrees: intValue >= 293 && intValue <= 337 );
+then
+wind.setDirection("NW");
+end;
+
+rule "N2"
+when
+Integer( $degrees: intValue >= 338 && intValue <= 360 );
+then
+wind.setDirection("N");
+end;
+
+

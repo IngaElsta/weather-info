@@ -11,6 +11,8 @@ import com.github.ingaelsta.weatherinfo.weather.model.Wind;
 import com.github.ingaelsta.weatherinfo.weather.exception.OWMDataException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.util.ResourceUtils;
@@ -33,11 +35,14 @@ public class OWMDeserializerTest {
     private File jsonWrongAlertDataType;
     private File jsonNoDailyData;
     private File jsonEmptyDailyData;
+    private OWMDeserializer deserializer = new OWMDeserializer();
+
+    public OWMDeserializerTest() throws IOException {
+    }
 
     @BeforeEach
     public void setup() throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-        OWMDeserializer deserializer = new OWMDeserializer();
         SimpleModule module = new SimpleModule("OWMDeserializer",
                 new Version(1, 0, 0, null, null, null));
         module.addDeserializer(Map.class, deserializer);
@@ -167,5 +172,20 @@ public class OWMDeserializerTest {
     void When_JsonHasNonNumericValueForNumberInAlert_Then_deserializeThrowsOWMDataException () throws IOException {
         String text = new String(Files.readAllBytes(jsonWrongAlertDataType.toPath()));
         assertThrows(OWMDataException.class, () -> this.json.parseObject(text));
+    }
+
+    @Test
+    void WindDegreesAreSuccessfullyConvertedToMainDirections() throws IOException {
+        assertEquals(deserializer.windDegreesToDirection(-4), new Wind (null, null, null));
+        assertEquals(deserializer.windDegreesToDirection(0), new Wind (null, null, "N"));
+        assertEquals(deserializer.windDegreesToDirection(60), new Wind (null, null, "NE"));
+        assertEquals(deserializer.windDegreesToDirection(80), new Wind (null, null, "E"));
+        assertEquals(deserializer.windDegreesToDirection(115), new Wind (null, null, "SE"));
+        assertEquals(deserializer.windDegreesToDirection(202), new Wind (null, null, "S"));
+        assertEquals(deserializer.windDegreesToDirection(203), new Wind (null, null, "SW"));
+        assertEquals(deserializer.windDegreesToDirection(260), new Wind (null, null, "W"));
+        assertEquals(deserializer.windDegreesToDirection(300), new Wind (null, null, "NW"));
+        assertEquals(deserializer.windDegreesToDirection(350), new Wind (null, null, "N"));
+        assertEquals(deserializer.windDegreesToDirection(400), new Wind (null, null, null));
     }
 }

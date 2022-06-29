@@ -6,12 +6,15 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.github.ingaelsta.weatherinfo.commons.Conversion;
+import com.github.ingaelsta.weatherinfo.weather.configuration.DroolsConfiguration;
 import com.github.ingaelsta.weatherinfo.weather.model.Alert;
 import com.github.ingaelsta.weatherinfo.weather.model.Temperature;
 import com.github.ingaelsta.weatherinfo.weather.model.WeatherConditions;
 import com.github.ingaelsta.weatherinfo.weather.model.Wind;
 import com.github.ingaelsta.weatherinfo.weather.exception.OWMDataException;
 import lombok.extern.slf4j.Slf4j;
+import org.drools.compiler.kie.builder.impl.KieContainerImpl;
+import org.kie.api.runtime.KieSession;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -21,12 +24,20 @@ import java.util.*;
 @Slf4j
 public class OWMDeserializer extends StdDeserializer<Map<LocalDate, WeatherConditions>> {
 
+    KieSession kieSession;
+
     public OWMDeserializer() {
         this(null);
     }
 
     public OWMDeserializer(Class<?> vc) {
         super(vc);
+        try {
+            kieSession = new DroolsConfiguration().getKieSession();
+        } catch (IOException e) {
+            log.error("OWMDeserializer: Failed to initialize kieSession");
+            throw new OWMDataException("Failed to process weather data");
+        }
     }
 
     @Override
@@ -72,9 +83,7 @@ public class OWMDeserializer extends StdDeserializer<Map<LocalDate, WeatherCondi
     private Map<LocalDate, WeatherConditions> processDailyWeatherArray(
             JsonNode DailyWeatherListNode, List<Alert> allAlerts) {
         Map<LocalDate, WeatherConditions> conditionsMap = new LinkedHashMap<>();
-        if (DailyWeatherListNode == null
-                || DailyWeatherListNode.isEmpty()
-                || !DailyWeatherListNode.isArray()) {
+        if (!containsWeatherData(DailyWeatherListNode)) {
             log.error("OWMDeserializer: Json did not contain daily weather data, {}", DailyWeatherListNode);
             throw new OWMDataException("Failed to process weather data");
         }
@@ -84,6 +93,12 @@ public class OWMDeserializer extends StdDeserializer<Map<LocalDate, WeatherCondi
         });
 
         return conditionsMap;
+    }
+
+    private boolean containsWeatherData(JsonNode DailyWeatherListNode) {
+        return DailyWeatherListNode != null
+                && !DailyWeatherListNode.isEmpty()
+                && DailyWeatherListNode.isArray();
     }
 
     private WeatherConditions processDailyWeatherNodeData(List<Alert> allAlerts, JsonNode dailyWeatherNode) {
@@ -120,15 +135,22 @@ public class OWMDeserializer extends StdDeserializer<Map<LocalDate, WeatherCondi
         return weatherDescriptions;
     }
 
-    private Wind gatherWindData(JsonNode dailyWeather) {
-        Wind wind = new Wind(
-                Double.parseDouble(dailyWeather.get("wind_speed").asText()),
-                Double.parseDouble(dailyWeather.get("wind_gust").asText()),
-                Wind.degreesToDirection(dailyWeather.get("wind_deg").asInt()));
+    private Wind gatherWindData(JsonNode dailyWeather){
+        Wind wind = windDegreesToDirection(dailyWeather.get("wind_deg").asInt());
+        wind.setSpeed(Double.parseDouble(dailyWeather.get("wind_speed").asText()));
+        wind.setGusts(Double.parseDouble(dailyWeather.get("wind_gust").asText()));
         return wind;
     }
 
-    private List<Alert> gatherAlertDataForDay(List<Alert> alerts, LocalDate date){
+    public Wind windDegreesToDirection(Integer windDegrees){
+        Wind wind = new Wind();
+        kieSession.insert(windDegrees);
+        kieSession.setGlobal("wind", wind);
+        kieSession.fireAllRules();
+        return wind;
+    }
+
+    private List<Alert> gatherAlertDataForDay(List<Alert> alerts, LocalDate date) {
         List<Alert> dailyAlerts = new ArrayList<>();
 
         LocalDateTime beginningOfDay = date.atStartOfDay();
@@ -141,7 +163,7 @@ public class OWMDeserializer extends StdDeserializer<Map<LocalDate, WeatherCondi
         return dailyAlerts;
     }
 
-    private Temperature gatherTemperatureData(JsonNode temperatureNode){
+    private Temperature gatherTemperatureData(JsonNode temperatureNode) {
         return new Temperature(
                 Double.parseDouble(temperatureNode.get("morn").asText()),
                 Double.parseDouble(temperatureNode.get("day").asText()),

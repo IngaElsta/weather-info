@@ -11,9 +11,6 @@ import com.github.ingaelsta.weatherinfo.weather.model.Wind;
 import com.github.ingaelsta.weatherinfo.weather.exception.OWMDataException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.util.ResourceUtils;
 
@@ -24,18 +21,28 @@ import java.time.LocalDate;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class OWMDeserializerTest {
     private JacksonTester<Map<LocalDate, WeatherConditions>> json;
-    private File jsonNoAlerts;
-    private File jsonWithAlerts;
-    private File jsonWrongDataType;
-    private File jsonMissingData;
-    private File jsonMissingAlertData;
-    private File jsonWrongAlertDataType;
-    private File jsonNoDailyData;
-    private File jsonEmptyDailyData;
-    private OWMDeserializer deserializer = new OWMDeserializer();
+
+    private final File jsonNoAlerts = ResourceUtils.getFile(
+            "classpath:weather/valid_single_day_no_alerts.json");
+    private final File jsonWithAlerts = ResourceUtils.getFile(
+            "classpath:weather/valid_two_days_with_alerts.json");
+    private final File jsonWrongDataType = ResourceUtils.getFile(
+            "classpath:weather/invalid_single_day_wrong_data_type.json");
+    private final File jsonMissingData = ResourceUtils.getFile(
+            "classpath:weather/invalid_single_day_missing_data.json");
+    private final File jsonMissingAlertData = ResourceUtils.getFile(
+            "classpath:weather/invalid_single_day_missing_alert_data.json");
+    private final File jsonWrongAlertDataType = ResourceUtils.getFile(
+            "classpath:weather/invalid_single_day_wrong_data_type_in_alert.json");
+    private final File jsonNoDailyData = ResourceUtils.getFile(
+            "classpath:weather/invalid_single_day_no_daily_weather_data.json");
+    private final File jsonEmptyDailyData = ResourceUtils.getFile(
+            "classpath:weather/invalid_single_day_empty_daily_weather_data.json");
+    private final OWMDeserializer deserializer = new OWMDeserializer();
 
     public OWMDeserializerTest() throws IOException {
     }
@@ -49,23 +56,6 @@ public class OWMDeserializerTest {
         mapper.registerModule(module);
 
         JacksonTester.initFields(this, mapper);
-
-        jsonNoAlerts = ResourceUtils.getFile(
-                "classpath:weather/valid_single_day_no_alerts.json");
-        jsonWithAlerts = ResourceUtils.getFile(
-                "classpath:weather/valid_two_days_with_alerts.json");
-        jsonWrongDataType = ResourceUtils.getFile(
-                "classpath:weather/invalid_single_day_wrong_data_type.json");
-        jsonWrongAlertDataType = ResourceUtils.getFile(
-                "classpath:weather/invalid_single_day_wrong_data_type_in_alert.json");
-        jsonMissingData = ResourceUtils.getFile(
-                "classpath:weather/invalid_single_day_missing_data.json");
-        jsonMissingAlertData = ResourceUtils.getFile(
-                "classpath:weather/invalid_single_day_missing_alert_data.json");
-        jsonNoDailyData = ResourceUtils.getFile(
-                "classpath:weather/invalid_single_day_no_daily_weather_data.json");
-        jsonEmptyDailyData = ResourceUtils.getFile(
-                "classpath:weather/invalid_single_day_empty_daily_weather_data.json");
     }
 
     @Test
@@ -175,7 +165,7 @@ public class OWMDeserializerTest {
     }
 
     @Test
-    void WindDegreesAreSuccessfullyConvertedToMainDirections() throws IOException {
+    void WindDegreesAreSuccessfullyConvertedToMainDirections() {
         assertEquals(deserializer.windDegreesToDirection(-4), new Wind (null, null, null));
         assertEquals(deserializer.windDegreesToDirection(0), new Wind (null, null, "N"));
         assertEquals(deserializer.windDegreesToDirection(60), new Wind (null, null, "NE"));

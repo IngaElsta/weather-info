@@ -21,7 +21,7 @@ public class DroolsConfiguration {
 
     private KieFileSystem getKieFileSystem() throws IOException {
         KieFileSystem kieFileSystem = kieServices.newKieFileSystem();
-        kieFileSystem.write(ResourceFactory.newClassPathResource("WindDirection.drl"));
+        kieFileSystem.write(ResourceFactory.newClassPathResource("rules/WindDirection.drl"));
         return kieFileSystem;
 
     }

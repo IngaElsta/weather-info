@@ -35,16 +35,8 @@ cron:
 
 resilience4j.circuitbreaker:
   instances:
-    default:
-      registerHealthIndicator: true
+    OWMCircuitBreaker:
       slidingWindowSize: 3
-#    backendB:
-#      registerHealthIndicator: true
-#      slidingWindowSize: 10
       permittedNumberOfCallsInHalfOpenState: 3
-#      slidingWindowType: TIME_BASED
       minimumNumberOfCalls: 10
       waitDurationInOpenState: 60s
-#      failureRateThreshold: 50
-#      eventConsumerBufferSize: 10
-#      recordFailurePredicate: io.github.robwin.exception.RecordFailurePredicate

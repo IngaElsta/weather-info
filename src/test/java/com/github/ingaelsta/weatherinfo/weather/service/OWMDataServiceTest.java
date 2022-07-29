@@ -11,8 +11,6 @@ import com.github.ingaelsta.weatherinfo.weather.model.Temperature;
 import com.github.ingaelsta.weatherinfo.weather.model.WeatherConditions;
 import com.github.ingaelsta.weatherinfo.commons.Conversion;
 import com.github.ingaelsta.weatherinfo.weather.model.Wind;
-import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
-import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -34,8 +32,6 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(
@@ -63,7 +59,6 @@ public class OWMDataServiceTest {
     public static MockWebServer mockBackEnd;
     private Map<LocalDate, WeatherConditions> weatherConditionsMap;
     private Location location;
-    private CircuitBreaker circuitBreaker;
 
     @BeforeEach
     public void setup() throws IOException {
@@ -85,7 +80,6 @@ public class OWMDataServiceTest {
         owmDataServiceMock = new OWMDataService(owmConfiguration, objectMapperConfigMock);
         mockBackEnd = new MockWebServer();
         mockBackEnd.start(8085);
-        circuitBreaker = owmDataServiceMock.getOwmCircuitBreaker();
     }
 
     @AfterEach
@@ -126,34 +120,6 @@ public class OWMDataServiceTest {
         when(objectMapperMock.readValue(text, Map.class))
                 .thenThrow(JsonProcessingException.class);
         assertThrows(OWMDataException.class, () -> owmDataServiceMock.retrieveWeather(location));
-    }
-
-    //circuit breaker tests
-    @Test
-    public void When_CircuitBreakerIsClosedAndBackendIsFunctional_Then_retrieve()
-            throws JsonProcessingException {
-        circuitBreaker.transitionToClosedState();
-        String text = "placeholder";
-        mockBackEnd.enqueue(new MockResponse()
-                .setBody(text)
-                .addHeader("Content-Type", "application/json"));
-        when(objectMapperMock.readValue(text, Map.class))
-                .thenReturn(weatherConditionsMap);
-
-        Map<LocalDate, WeatherConditions> result = owmDataServiceMock.retrieveWeather(location);
-        assertEquals(weatherConditionsMap, result);
-        verify(objectMapperMock, times(1)).readValue(text, Map.class);
-    }
-    @Test
-    public void When_CircuitBreakerIsClosedAndBackendIsDown_Then_retrieveWeatherThrowsIllegalStateException() {
-        circuitBreaker.transitionToClosedState();
-        assertThrows(IllegalStateException.class, () -> owmDataServiceMock.retrieveWeather(location));
-    }
-
-    @Test
-    public void When_CircuitBreakerIsOpenAndBackendIsFunctional_Then_retrieveWeatherThrowsCallNotPermittedException() {
-        circuitBreaker.transitionToOpenState();
-        assertThrows(CallNotPermittedException.class, () -> owmDataServiceMock.retrieveWeather(location));
     }
 
 }

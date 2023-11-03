@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.6.6</version>
+		<version>3.1.5</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.github.ingaelsta</groupId>
@@ -15,8 +15,8 @@
 	<description>API for retrieving limited weather information and storing favorite locations for it</description>
 
 	<properties>
-		<java.version>11</java.version>
-		<drools-version>7.68.0.Final</drools-version>
+		<java.version>17</java.version>
+		<drools-version>9.44.0.Final</drools-version>
 	</properties>
 
 	<dependencies>
@@ -58,13 +58,14 @@
 
 		<dependency>
 			<groupId>org.springdoc</groupId>
-			<artifactId>springdoc-openapi-ui</artifactId>
-			<version>1.6.9</version>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>2.2.0</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
+			<version>2.2.224</version>
 			<scope>runtime</scope>
 		</dependency>
 
@@ -75,14 +76,8 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.drools</groupId>
-			<artifactId>drools-core</artifactId>
-			<version>${drools-version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.drools</groupId>
-			<artifactId>drools-compiler</artifactId>
+			<groupId>org.kie</groupId>
+			<artifactId>kie-ci</artifactId>
 			<version>${drools-version}</version>
 		</dependency>
 

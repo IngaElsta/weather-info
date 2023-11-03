@@ -3,15 +3,15 @@ package com.github.ingaelsta.weatherinfo.weather.controller;
 import com.github.ingaelsta.weatherinfo.commons.model.Location;
 import com.github.ingaelsta.weatherinfo.weather.model.WeatherConditions;
 import com.github.ingaelsta.weatherinfo.weather.service.WeatherService;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
+
 import java.time.LocalDate;
 import java.util.Map;
 

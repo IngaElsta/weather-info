@@ -3,7 +3,7 @@ package com.github.ingaelsta.weatherinfo.commons.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import javax.validation.constraints.*;
+import jakarta.validation.constraints.*;
 
 @Data
 @AllArgsConstructor

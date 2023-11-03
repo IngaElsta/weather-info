@@ -12,7 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriTemplate;
@@ -29,6 +29,7 @@ public class OWMDataService implements WeatherDataService {
     private final ObjectMapper objectMapper;
     private final OWMConfiguration owmConfiguration;
     private final WebClient webClient;
+    private final long timeout;
 
     public OWMDataService(OWMConfiguration owmConfiguration,
                           OWMObjectMapperConfiguration OWMobjectMapperConfiguration
@@ -36,6 +37,7 @@ public class OWMDataService implements WeatherDataService {
         this.owmConfiguration = owmConfiguration;
         this.objectMapper = OWMobjectMapperConfiguration.getObjectMapper();
         this.webClient = WebClient.create();
+        this.timeout = Long.parseLong(owmConfiguration.getTimeout());
     }
 
     @CircuitBreaker(name = "OWMCircuitBreaker")
@@ -52,14 +54,14 @@ public class OWMDataService implements WeatherDataService {
         String response = webClient.get()
                 .uri(owmURI)
                 .retrieve()
-                .onStatus(HttpStatus::isError, result -> {
+                .onStatus(HttpStatusCode::isError, result -> {
                     result.toEntity(String.class).subscribe(
                             error -> log.warn("Failed to retrieve weather data {}", error)
                     );
                     throw new OWMDataException("Failed to retrieve weather data");
                 })
                 .bodyToMono(String.class)
-                .block(Duration.of(30000, ChronoUnit.MILLIS));
+                .block(Duration.of(timeout, ChronoUnit.MILLIS));
         return response;
     }
 

@@ -11,4 +11,4 @@ The favorite service contains simple GET (all), POST and DELETE (by id) endpoint
 
 The one call API from https://openweathermap.org/ is used to retrieve the weather info.
 
-Leaned down version of https://github.com/IngaElsta/spring_boot_task 
+Leaned down version of https://github.com/IngaElsta/spring_boot_task

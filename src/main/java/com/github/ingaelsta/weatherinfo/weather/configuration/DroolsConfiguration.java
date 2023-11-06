@@ -3,11 +3,7 @@ package com.github.ingaelsta.weatherinfo.weather.configuration;
 import java.io.IOException;
 
 import org.kie.api.KieServices;
-import org.kie.api.builder.KieBuilder;
-import org.kie.api.builder.KieFileSystem;
-import org.kie.api.builder.KieModule;
-import org.kie.api.builder.KieRepository;
-import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.*;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.io.ResourceFactory;
@@ -17,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class DroolsConfiguration {
 
-    private KieServices kieServices = KieServices.Factory.get();
+    private final KieServices kieServices = KieServices.Factory.get();
 
     private KieFileSystem getKieFileSystem() throws IOException {
         KieFileSystem kieFileSystem = kieServices.newKieFileSystem();
@@ -27,31 +23,18 @@ public class DroolsConfiguration {
     }
 
     @Bean
-    public KieContainer getKieContainer() throws IOException {
-        System.out.println("Container created...");
-        getKieRepository();
+    public KieSession getKieSession() throws IOException {
         KieBuilder kb = kieServices.newKieBuilder(getKieFileSystem());
         kb.buildAll();
-        KieModule kieModule = kb.getKieModule();
-        KieContainer kContainer = kieServices.newKieContainer(kieModule.getReleaseId());
-        return kContainer;
 
-    }
+        KieRepository kieRepository = kieServices.getRepository();
+        KieContainer kieContainer  = kieServices
+                .newKieContainer(kieRepository
+                        .getDefaultReleaseId());
+        KieSession kieSession = kieContainer.newKieSession();
 
-    private void getKieRepository() {
-        final KieRepository kieRepository = kieServices.getRepository();
-        kieRepository.addKieModule(new KieModule() {
-            public ReleaseId getReleaseId() {
-                return kieRepository.getDefaultReleaseId();
-            }
-        });
-    }
-
-    @Bean
-    public KieSession getKieSession() throws IOException {
-        System.out.println("session created...");
-        return getKieContainer().newKieSession();
-
+        System.out.println("KieSession created...");
+        return kieSession;
     }
 
 }

@@ -3,11 +3,11 @@ package com.github.ingaelsta.weatherinfo.weather.model;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validator;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
 import java.util.Set;
 
-import static javax.validation.Validation.buildDefaultValidatorFactory;
+import static jakarta.validation.Validation.buildDefaultValidatorFactory;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TemperatureTest {
